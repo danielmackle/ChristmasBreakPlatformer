@@ -1,5 +1,7 @@
 ---High Prio---
+Find and test a library that allows us to use windows and images; this can be demonstrated with a script that creates a window with an image that moves smoothly.
+Find and test a library that allows us to detect input. Possibly the same library as above.
+Complete UML.
+Implement UML.
 ---Low Prio---
 Write readme
-I have committed.
-I have also.
