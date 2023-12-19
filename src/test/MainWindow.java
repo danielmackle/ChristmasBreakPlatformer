@@ -21,17 +21,18 @@ public class MainWindow {
     // The window handle
     private long window;
     public void run() {
-        GLFWErrorCallback.createPrint(System.err).set();
+        ///GLFWErrorCallback.createPrint(System.err).set();
+
         init();
         loop();
 
         // Free the window callbacks and destroy the window
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
+        ///glfwFreeCallbacks(window);
+        ///glfwDestroyWindow(window);
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+        ///Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
     private void init() {
