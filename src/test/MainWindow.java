@@ -31,7 +31,13 @@ public class MainWindow {
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+        try{
+            glfwSetErrorCallback(null).free();
+        }
+        catch (Exception ex){
+
+        }
+
     }
 
     private void init() {
