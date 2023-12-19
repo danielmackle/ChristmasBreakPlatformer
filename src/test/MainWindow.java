@@ -21,7 +21,7 @@ public class MainWindow {
     // The window handle
     private long window;
     public void run() {
-
+        GLFWErrorCallback.createPrint(System.err).set();
         init();
         loop();
 
@@ -31,13 +31,7 @@ public class MainWindow {
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        try{
-            glfwSetErrorCallback(null).free();
-        }
-        catch (Exception ex){
-
-        }
-
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
     private void init() {
