@@ -1,6 +1,5 @@
 package test;
 
-import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -35,6 +34,10 @@ public class MainWindow {
     }
 
     private void init() {
+        // Setup an error callback. The default implementation
+        // will print the error message in System.err.
+        GLFWErrorCallback.createPrint(System.err).set();
+
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if ( !glfwInit() ) {
             System.out.println("Unable to initialize GLFW");
