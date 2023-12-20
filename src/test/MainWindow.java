@@ -20,6 +20,10 @@ public class MainWindow {
     // The window handle
     private long window;
 
+    /**
+     * Creates, initialises, opens the window, and handles its closure.
+     * @throws Exception if there is a problem initialising GLFW or creating the window.
+     */
     public void run() throws Exception {
         init();
         startLoop();
@@ -33,6 +37,10 @@ public class MainWindow {
         Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
+    /**
+     * Prepares the window
+     * @throws Exception if there is a problem initialising GLFW or creating the window.
+     */
     private void init() throws Exception {
         // Set up an error callback. The default implementation
         // will print the error message in System.err.
@@ -40,16 +48,17 @@ public class MainWindow {
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if ( !glfwInit() ) {
-            System.out.println("Unable to initialize GLFW");
-            System.exit(1);
+            throw new Exception("Unable to initialize GLFW");
         }
 
         // Create the window
         window = glfwCreateWindow(800, 600, "Main window", NULL, NULL);
-        if ( window == NULL )
+        if ( window == NULL ) {
             throw new Exception("Failed to create the GLFW window");
+        }
 
-        setKeyCallbacks();
+        // Assign functions to keys
+        glfwSetKeyCallback(window, this::processKey);
 
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
@@ -81,30 +90,20 @@ public class MainWindow {
     }
 
     /**
-     * Overridable method that is called in init() that assigns key callbacks.
-     * By default, closes the window when escape pressed.
+     * Assigns functions to keys. To be used with glfwSetKeyCallback.
      */
-    protected void setKeyCallbacks() {
-        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
-                glfwMakeContextCurrent(window);
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-            }
-
-            if ( key == GLFW_KEY_ENTER && action == GLFW_PRESS ){
-                try{
-                    //glfwSetWindowShouldClose(window, true);
-                    glfwDestroyWindow(window);
-                    new MainWindow().run();
-                }
-                catch (Exception ex){
-                    System.out.println("Error in making new Window. Please try again!");
-                }
-            }
-        });
+    protected void processKey(long window, int key, int scancode, int action, int mods) {
+        if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
+            glfwSetWindowShouldClose(window, true);
+        }
+        if ( key == GLFW_KEY_1 && action == GLFW_RELEASE ) {
+            System.out.println("Test");
+        }
     }
 
+    /**
+     * Handles setting up and running the game loop.
+     */
     private void startLoop() {
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
@@ -112,9 +111,6 @@ public class MainWindow {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
-
-        // Set the clear color
-        glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -132,7 +128,7 @@ public class MainWindow {
     }
 
     /**
-     * Overridable method for handling logic for the main game loop.
+     * Called every iteration of the game loop; handles game logic.
      */
     protected void loop() {
 
