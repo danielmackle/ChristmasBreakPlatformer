@@ -25,7 +25,7 @@ public class MainWindow {
         startLoop();
 
         // Free the window callbacks and destroy the window
-        //glfwFreeCallbacks(window);
+        glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
 
         // Terminate GLFW and free the error callback
@@ -87,13 +87,14 @@ public class MainWindow {
     protected void setKeyCallbacks() {
         // Set up a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
+                glfwMakeContextCurrent(window);
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        });
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            }
+
             if ( key == GLFW_KEY_ENTER && action == GLFW_PRESS ){
                 try{
-                    glfwSetWindowShouldClose(window, true);
+                    //glfwSetWindowShouldClose(window, true);
                     glfwDestroyWindow(window);
                     new MainWindow().run();
                 }
