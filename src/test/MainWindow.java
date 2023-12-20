@@ -1,6 +1,5 @@
 package test;
 
-import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -20,21 +19,25 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class MainWindow {
     // The window handle
     private long window;
-    public void run(){
-        ///GLFWErrorCallback.createPrint(System.err).set();
+
+    public void run() throws Exception {
         init();
-        loop();
+        startLoop();
 
         // Free the window callbacks and destroy the window
-        ///glfwFreeCallbacks(window);
-        ///glfwDestroyWindow(window);
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        ///Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
-    private void init() {
+    private void init() throws Exception {
+        // Setup an error callback. The default implementation
+        // will print the error message in System.err.
+        GLFWErrorCallback.createPrint(System.err).set();
+
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if ( !glfwInit() ) {
             System.out.println("Unable to initialize GLFW");
@@ -42,16 +45,11 @@ public class MainWindow {
         }
 
         // Create the window
-        window = glfwCreateWindow(1920, 1080, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(1920, 1080, "Main window", glfwGetPrimaryMonitor(), NULL);
         if ( window == NULL )
-            throw new RuntimeException("Failed to create the GLFW window");
+            throw new Exception("Failed to create the GLFW window");
 
-        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
-        ////input!!!
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        });
+        setKeyCallbacks();
 
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
@@ -72,16 +70,29 @@ public class MainWindow {
                     (vidmode.height() - pHeight.get(0)) / 2
             );
         } // the stack frame is popped automatically
+
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
         // Enable v-sync
         glfwSwapInterval(1);
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
         // Make the window visible
         glfwShowWindow(window);
     }
 
-    private void loop() {
+    /**
+     * Overridable method that is called in init() that assigns key callbacks.
+     * By default, closes the window when escape pressed.
+     */
+    protected void setKeyCallbacks() {
+        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+        });
+    }
+
+    private void startLoop() {
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
@@ -95,6 +106,8 @@ public class MainWindow {
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(window) ) {
+            loop();
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             glfwSwapBuffers(window); // swap the color buffers
@@ -103,5 +116,12 @@ public class MainWindow {
             // invoked during this call.
             glfwPollEvents();
         }
+    }
+
+    /**
+     * Overridable method for handling logic for the main game loop.
+     */
+    protected void loop() {
+
     }
 }
