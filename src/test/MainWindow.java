@@ -25,7 +25,7 @@ public class MainWindow {
         startLoop();
 
         // Free the window callbacks and destroy the window
-        glfwFreeCallbacks(window);
+        //glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
 
         // Terminate GLFW and free the error callback
@@ -34,7 +34,7 @@ public class MainWindow {
     }
 
     private void init() throws Exception {
-        // Setup an error callback. The default implementation
+        // Set up an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -45,7 +45,7 @@ public class MainWindow {
         }
 
         // Create the window
-        window = glfwCreateWindow(1920, 1080, "Main window", glfwGetPrimaryMonitor(), NULL);
+        window = glfwCreateWindow(800, 600, "Main window", NULL, NULL);
         if ( window == NULL )
             throw new Exception("Failed to create the GLFW window");
 
@@ -89,6 +89,18 @@ public class MainWindow {
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+        });
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if ( key == GLFW_KEY_ENTER && action == GLFW_PRESS ){
+                try{
+                    glfwSetWindowShouldClose(window, true);
+                    glfwDestroyWindow(window);
+                    new MainWindow().run();
+                }
+                catch (Exception ex){
+                    System.out.println("Error in making new Window. Please try again!");
+                }
+            }
         });
     }
 
