@@ -20,9 +20,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class MainWindow {
     // The window handle
     private long window;
-    public void run() {
+    public void run(){
         ///GLFWErrorCallback.createPrint(System.err).set();
-
         init();
         loop();
 
@@ -43,11 +42,12 @@ public class MainWindow {
         }
 
         // Create the window
-        window = glfwCreateWindow(1920, 1080, "Hello World!", glfwGetPrimaryMonitor(), NULL);
+        window = glfwCreateWindow(1920, 1080, "Hello World!", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
         // Set up a key callback. It will be called every time a key is pressed, repeated or released.
+        ////input!!!
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
@@ -76,7 +76,7 @@ public class MainWindow {
         glfwMakeContextCurrent(window);
         // Enable v-sync
         glfwSwapInterval(1);
-
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         // Make the window visible
         glfwShowWindow(window);
     }

@@ -18,9 +18,8 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class HelloWorld {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //todo make the thing
-        //Daniel being silly below:
         new MainWindow().run();
     }
 }
